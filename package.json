@@ -1,0 +1,19 @@
+{
+  "name": "morphable",
+  "version": "0.1.0",
+  "description": "composable, reactive dom elements",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Luke Burns",
+  "license": "ISC",
+  "dependencies": {
+    "@nx-js/observer-util": "^4.1.1",
+    "nanomorph": "^5.1.3",
+    "on-load": "^3.3.4"
+  },
+  "devDependencies": {
+    "bel": "^5.1.6"
+  }
+}
