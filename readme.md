@@ -43,5 +43,5 @@ function subview (state) {
   return html`<div>${state.time}</div>`
 }
 
-ø(view, document.body)(state) // mutate document.body directly
+ø(view)(state, document.body) // mutate document.body directly
 ```
