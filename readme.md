@@ -28,7 +28,7 @@ In the example below, the child view `subview` updates independently when `state
 
 ```js
 let ø = require('morphable')
-let bel = require('bel')
+let html = require('bel')
 
 let state = ø.observable({ player: 1, time: 0 })
 
