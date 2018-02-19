@@ -10,7 +10,7 @@ const timer = _(state => html`<div>
   ${state.time}
 </div>`)
 
-const body = _(state => html`<body>
+const body = _(state => html`<body onclick=${() => state.player++}>
   <h1>Player ${state.player}</h1>
   ${timer(state)}
 </body>`)
@@ -20,4 +20,3 @@ body(state, document.body)
 
 // mutate state
 setInterval(() => state.time++, 200)
-setInterval(() => state.player++, 1000)
