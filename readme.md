@@ -26,29 +26,30 @@ when morphables are composed (see example below), only the relevant views are mu
 
 ## example
 
-In the example below, the child view `subview` updates independently when `state.time` changes, and the parent view `view` only re-renders when `state.player` changes.
+In the example below, the child view `timer` updates independently every millisecond, while the parent view `body` only re-renders on click events.
 
 ```js
 const html = require('bel')
 const _ = require('morphable')
 
-// create observable state
-const state = _({ player: 1, time: 0 })
+// observable state
+const state = _({ clicks: 0, time: Date.now() })
 
-// compose reactive views 
+// actions
+state.click = () => state.clicks++
+state.tick = () => state.time = Date.now()
+
+// views 
 const timer = _(state => html`<div>
-  ${state.time}
+  Time: ${state.time}
 </div>`)
 
-const body = _(state => html`<body>
-  <h1>Player ${state.player}</h1>
+const body = _(state => html`<body onclick=${state.click}>
   ${timer(state)}
+  <div>Clicks: ${state.clicks}</div>
 </body>`)
 
 // render and mount body
 body(state, document.body)
-
-// mutate state
-state.time++ // only timer re-renders
-state.player++ // body re-renders
+setInterval(state.tick, 1)
 ```

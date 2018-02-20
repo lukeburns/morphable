@@ -1,25 +1,23 @@
 const html = require('bel')
 const _ = require('../')
-_.log = true
 
-// create observable state
-const state = _({ player: 1, time: 0 })
+// observable state
+const state = _({ clicks: 0, time: Date.now() })
 
-state.nextPlayer = () => state.player++
-state.tick = () => state.time++
+// actions
+state.click = () => state.clicks++
+state.tick = () => state.time = Date.now()
 
-// compose reactive views 
+// views 
 const timer = _(state => html`<div>
   Time: ${state.time}
 </div>`)
 
-const body = _(state => html`<body onclick=${state.nextPlayer}>
-  <h1>Player ${state.player}</h1>
+const body = _(state => html`<body onclick=${state.click}>
   ${timer(state)}
+  <div>Clicks: ${state.clicks}</div>
 </body>`)
 
 // render and mount body
 body(state, document.body)
-
-// mutate state
 setInterval(state.tick, 1)
