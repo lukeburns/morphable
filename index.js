@@ -6,22 +6,24 @@ let i = 0
 
 function morphable (view) {
   if (typeof view !== 'function') return observable(view)
-  let name = view.name || i++
-  
-  return function (state, init) {
+  const name = view.name || i++
+  const fn = function (state, init) {
     init = init || view(morphable.raw(state))
     let reaction
     return onload(init, function (el) {
       if (morphable.log) console.log('load:', name, el)
-      let reaction = observe(() => { 
+      if (fn.onload) fn.onload(el)
+      let reaction = observe(() => {
         if (morphable.log) console.log('morph:', name, el)
         onload(morph(el, view(state)), null, function (el) {
           if (morphable.log) console.log('unload:', name, el)
+          if (fn.onunload) fn.onunload(el)
           unobserve(reaction)
         })
       })
     })
   }
+  return fn
 }
 
 Object.assign(morphable, util)

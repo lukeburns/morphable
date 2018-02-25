@@ -1,55 +1,47 @@
 # morphable
 
-composable, reactive dom elements.
+composable, reactive dom elements
 
 ```js
 npm install morphable
 ```
 
+powered by [observer-util](https://github.com/nx-js/observer-util), [nanomorph](https://github.com/choojs/nanomorph), and [on-load](https://github.com/shama/on-load). built for use with [bel](https://github.com/shama/bel).
+
 ## api
 
 ```js
 let morphable = require('morphable')
-```
 
-when passed an object, morphable returns an observable copy of that object using [observer-util](https://github.com/nx-js/observer-util).
-
-otherwise, morphable takes a pure view, i.e. a function that takes state and returns a dom element, and returns a reactive view, a function that takes an observable state and returns a reactive dom element, that mutates itself on the relevant observable state changes using  [nanomorph](https://github.com/choojs/nanomorph).
-
-```js
 let observable_state = morphable({})
 let reactive_view = morphable(state => dom_element)
 let reactive_element = reactive_view(observable_state, [mount_point])
 ```
 
-when morphables are composed (see example below), only the relevant views are mutated.
+you can define load and unload handles on a `reactive_view`.
+
+```js
+reactive_view.onload = () => console.log('loaded element')
+reactive_view.onunload = () => console.log('unloaded element')
+```
+
+reactive elements stop reacting to changes when they are removed from the dom.
 
 ## example
-
-In the example below, the child view `timer` updates independently every millisecond, while the parent view `body` only re-renders on click events.
 
 ```js
 const html = require('bel')
 const _ = require('morphable')
 
-// observable state
-const state = _({ clicks: 0, time: Date.now() })
+const list = _([])
 
-// actions
-state.click = () => state.clicks++
-state.tick = () => state.time = Date.now()
-
-// views 
-const timer = _(state => html`<div>
-  Time: ${state.time}
-</div>`)
-
-const body = _(state => html`<body onclick=${state.click}>
-  ${timer(state)}
-  <div>Clicks: ${state.clicks}</div>
+const body = _(list => html`<body>
+  <h1>Random numbers</h1>
+  <button onclick=${() => list.push(Math.random())}>Append random number</button>
+  <ul>
+    ${list.map(num => html`<li>${num}</li>`)}
+  </ul>
 </body>`)
 
-// render and mount body
-body(state, document.body)
-setInterval(state.tick, 1)
+body(list, document.body)
 ```

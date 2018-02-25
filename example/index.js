@@ -1,23 +1,17 @@
 const html = require('bel')
 const _ = require('../')
 
-// observable state
-const state = _({ clicks: 0, time: Date.now() })
+const list = _([])
 
-// actions
-state.click = () => state.clicks++
-state.tick = () => state.time = Date.now()
-
-// views 
-const timer = _(state => html`<div>
-  Time: ${state.time}
-</div>`)
-
-const body = _(state => html`<body onclick=${state.click}>
-  ${timer(state)}
-  <div>Clicks: ${state.clicks}</div>
+const body = _(list => html`<body>
+  <h1>Random numbers</h1>
+  <button onclick=${() => list.push(Math.random())}>Append random number</button>
+  <ul>
+    ${list.map(num => html`<li>${num}</li>`)}
+  </ul>
 </body>`)
 
-// render and mount body
-body(state, document.body)
-setInterval(state.tick, 1)
+body.onload = el => console.log('loaded body', el)
+body.onunload = el => console.log('unloaded body', el)
+
+body(list, document.body)
