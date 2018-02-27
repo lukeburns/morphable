@@ -12,12 +12,12 @@ function morphable (view) {
     let reaction
     return onload(init, function (el) {
       if (morphable.log) console.log('load:', name, el)
-      if (fn.onload) fn.onload(el)
+      if (fn.onload) fn.onload(el, morphable.raw(state))
       let reaction = observe(() => {
         if (morphable.log) console.log('morph:', name, el)
         onload(morph(el, view(state)), null, function (el) {
           if (morphable.log) console.log('unload:', name, el)
-          if (fn.onunload) fn.onunload(el)
+          if (fn.onunload) fn.onunload(el, morphable.raw(state))
           unobserve(reaction)
         })
       })
