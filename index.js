@@ -1,6 +1,7 @@
 const onload = require('on-load')
 const morph = require('nanomorph')
 const util = require('@nx-js/observer-util')
+const Events = require('events')
 const { observable, observe, unobserve } = util
 let i = 0
 
@@ -12,17 +13,19 @@ function morphable (view) {
     let reaction
     return onload(init, function (el) {
       if (morphable.log) console.log('load:', name, el)
-      if (fn.onload) fn.onload(el, morphable.raw(state))
+      fn.emit('load', morphable.raw(state), el)
       let reaction = observe(() => {
         if (morphable.log) console.log('morph:', name, el)
         onload(morph(el, view(state)), null, function (el) {
           if (morphable.log) console.log('unload:', name, el)
-          if (fn.onunload) fn.onunload(el, morphable.raw(state))
+          fn.emit('unload', morphable.raw(state), el)
           unobserve(reaction)
         })
       })
     })
   }
+  Events.call(fn)
+  Object.assign(fn, Events.prototype)
   return fn
 }
 

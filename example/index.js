@@ -12,5 +12,5 @@ const body = _(list => html`<body>
 
 body(list, document.body)
 
-body.onload = (el, list) => console.log('loaded body', el, list)
-body.onunload = (el, list) => console.log('unloaded body', el, list)
+body.on('load', (el, list) => console.log('loaded body', el, list))
+body.on('unload', (el, list) => console.log('unloaded body', el, list))

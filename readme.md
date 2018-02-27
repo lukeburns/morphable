@@ -21,8 +21,8 @@ let reactive_element = reactive_view(observable_state, [mount_point])
 you can define load and unload handles on a `reactive_view`.
 
 ```js
-reactive_view.onload = () => console.log('loaded element')
-reactive_view.onunload = () => console.log('unloaded element')
+reactive_view.on('load', () => console.log('loaded element'))
+reactive_view.on('unload', () => console.log('unloaded element'))
 ```
 
 reactive elements stop reacting to changes when they are removed from the dom.
