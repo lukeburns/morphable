@@ -38,6 +38,7 @@ function morphable (view) {
       unobserve(reaction)
       reaction = null
       fn.emit('unload', morphable.raw(state), el) // todo: don't trigger unload if removed from dom temporarily due to parent morph. https://github.com/shama/on-load/issues/25
+      // todo: remove cached on an actual unload (parent re-renders without it), so that it can emit load on a separate render.
     }, id)
   }
   events.call(fn)
