@@ -9,19 +9,19 @@ let i = 0
 function morphable (view) {
   if (typeof view !== 'function') return observable(view)
   
-  let cached
   const id = i++
+  let cached
+  
   const fn = function (state, init) {
     let reaction
     element = cached || init || view(morphable.raw(state))
     element.id = element.id || id
     
     return onload(element, function (el) {
-      if (!cached) fn.emit('load', morphable.raw(state), el)
+      if (reaction) return
       cached = el
       
-      if (reaction) return
-      fn.emit('observe', morphable.raw(state), el)
+      fn.emit('load', morphable.raw(state), el)
       reaction = observe(() => {
         fn.emit('morph', morphable.raw(state), el)
         
@@ -34,11 +34,9 @@ function morphable (view) {
     }, el => {
       if (!reaction) return
       
-      fn.emit('unobserve', morphable.raw(state), el)
+      fn.emit('unload', morphable.raw(state), el)
       unobserve(reaction)
       reaction = null
-      fn.emit('unload', morphable.raw(state), el) // todo: don't trigger unload if removed from dom temporarily due to parent morph. https://github.com/shama/on-load/issues/25
-      // todo: remove cached on an actual unload (parent re-renders without it), so that it can emit load on a separate render.
     }, id)
   }
   events.call(fn)

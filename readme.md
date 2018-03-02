@@ -11,18 +11,21 @@ powered by [observer-util](https://github.com/nx-js/observer-util), [nanomorph](
 ## api
 
 ```js
-let morphable = require('morphable')
+let _ = require('morphable')
 
-let observable_state = morphable({})
-let reactive_view = morphable(state => dom_element)
-let reactive_element = reactive_view(observable_state, [mount_point])
+let state = _({})
+let view = _(state => dom_element)
+let element = view(state, [mount_point])
 ```
 
-you can define load and unload handles on a `reactive_view`.
+`element` morphs when `state` that it depends upon changes. 
+
+you can define subscribe to load, morph, and unload events on `view`.
 
 ```js
-reactive_view.on('load', () => console.log('loaded element'))
-reactive_view.on('unload', () => console.log('unloaded element'))
+view.on('load', (state, element) => console.log('loaded element'))
+view.on('morph', (state, element) => console.log('morphed element'))
+view.on('unload', (state, element) => console.log('unloaded element'))
 ```
 
 reactive elements stop reacting to changes when they are removed from the dom.
@@ -30,12 +33,12 @@ reactive elements stop reacting to changes when they are removed from the dom.
 ## example
 
 ```js
-const html = require('bel')
+const bel = require('bel')
 const _ = require('morphable')
 
 const list = _([])
 
-const body = _(list => html`<body>
+const body = _(list => bel`<body>
   <h1>Random numbers</h1>
   <button onclick=${() => list.push(Math.random())}>Append random number</button>
   <ul>

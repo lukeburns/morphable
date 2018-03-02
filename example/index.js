@@ -1,16 +1,19 @@
 const html = require('bel')
 const _ = require('../')
 
-const list = _([])
+const state = _([])
 
-const body = _(list => html`<body>
-  <button onclick=${() => list.push(Math.random())}>Append random number</button>
-  <ul>
-    ${list.map(num => html`<li>${num}</li>`)}
-  </ul>
+const list = _(state => html`<ul>
+  ${state.map(num => html`<li>${num}</li>`)}
+</ul>`)
+
+const body = _(state => html`<body>
+  <button onclick=${() => state.push(Math.random())}>Append random number</button>
+  ${list(state)}
 </body>`)
 
-body(list, document.body)
+body(state, document.body)
 
-body.on('load', (el, list) => console.log('loaded body', el, list))
-body.on('unload', (el, list) => console.log('unloaded body', el, list))
+list.on('load', () => console.log('loaded list'))
+list.on('morph', () => console.log('morphed list'))
+list.on('unload', () => console.log('unloaded list'))
