@@ -1,6 +1,6 @@
 {
   "name": "morphable",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "composable, reactive dom elements",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "@nx-js/observer-util": "^4.1.1",
-    "lukeburns/on-load": "^3.4.0",
     "nanomorph": "^5.1.3",
     "on-load": "github:lukeburns/on-load"
   },

@@ -10,10 +10,10 @@ function morphable (view) {
   if (typeof view !== 'function') return observable(view)
   
   const id = i++
+  let reaction
   let cached
   
   const fn = function (state, init) {
-    let reaction
     element = cached || init || view(morphable.raw(state))
     element.id = element.id || id
     
