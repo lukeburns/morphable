@@ -7,7 +7,7 @@
     "build": "browserify example/index.js -t yo-yoify | babel --presets=env --out-file bundle.js"
   },
   "author": "Luke Burns",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@nx-js/observer-util": "^4.1.1",
     "nanomorph": "^5.1.3",
