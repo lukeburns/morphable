@@ -1,14 +1,14 @@
 const html = require('bel')
 const _ = require('../')
 
-const state = _([])
+const state = _({ list: [] })
 
 const list = _(state => html`<ul>
-  ${state.map(num => html`<li>${num}</li>`)}
+  ${state.list.map(num => html`<li>${num}</li>`)}
 </ul>`)
 
 const body = _(state => html`<body>
-  <button onclick=${() => state.push(Math.random())}>Append random number</button>
+  <button onclick=${() => state.list.push(Math.random())}>Append random number</button>
   ${list(state)}
 </body>`)
 

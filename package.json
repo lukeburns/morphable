@@ -4,7 +4,7 @@
   "description": "composable, reactive dom elements",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "browserify example/index.js -t yo-yoify | babel --presets=env --out-file bundle.js"
   },
   "author": "Luke Burns",
   "license": "ISC",
@@ -14,6 +14,12 @@
     "on-load": "github:lukeburns/on-load"
   },
   "devDependencies": {
-    "bel": "^5.1.6"
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "bel": "^5.1.6",
+    "yo-yoify": "^4.3.0"
   }
 }

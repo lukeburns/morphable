@@ -3,8 +3,8 @@ const morph = require('nanomorph')
 const util = require('@nx-js/observer-util')
 const events = require('events')
 const { observable, observe, unobserve } = util
-var OL_KEY_ID = onload.KEY_ID
-let i = 0
+var KEY_ID = onload.KEY_ID
+let i = 1
 
 function morphable (view) {
   if (typeof view !== 'function') return observable(view)
@@ -14,7 +14,7 @@ function morphable (view) {
   let cached
   
   const fn = function (state, init) {
-    element = cached || init || view(morphable.raw(state))
+    let element = cached || init || view(morphable.raw(state))
     element.id = element.id || id
     
     return onload(element, function (el) {
@@ -27,7 +27,7 @@ function morphable (view) {
         
         let update = view(state)
         update.id = update.id || id
-        update.dataset[OL_KEY_ID] = el.dataset[OL_KEY_ID]
+        update.dataset[KEY_ID] = el.dataset[KEY_ID]
         
         morph(el, update)
       })
