@@ -12,20 +12,21 @@ function morphable (view) {
   const id = i++
   let reaction
   let cached
+  let self = this
   
   const fn = function (state, init) {
-    let element = cached || init || view(morphable.raw(state))
+    let element = cached || init || view.call(morphable.raw(self), morphable.raw(state))
     element.id = element.id || id
     
     return onload(element, function (el) {
       if (reaction) return
       cached = el
       
-      fn.emit('load', morphable.raw(state), el)
+      fn.emit('load', morphable.raw(state), el, morphable.raw(self))
       reaction = observe(() => {
-        fn.emit('morph', morphable.raw(state), el)
+        fn.emit('morph', morphable.raw(state), el, morphable.raw(self))
         
-        let update = view(state)
+        let update = view.call(self, state)
         update.id = update.id || id
         update.dataset[KEY_ID] = el.dataset[KEY_ID]
         
@@ -34,7 +35,7 @@ function morphable (view) {
     }, el => {
       if (!reaction) return
       
-      fn.emit('unload', morphable.raw(state), el)
+      fn.emit('unload', morphable.raw(state), el, morphable.raw(self))
       unobserve(reaction)
       reaction = null
     }, id)
