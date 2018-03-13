@@ -24,9 +24,9 @@ function morphable (view) {
       if (reaction) return
       cached = el
       
-      fn.emit('load', ...rawArgs, el, morphable.raw(self))
+      fn.emit('load', ...rawArgs, morphable.raw(self), el)
       reaction = observe(() => {
-        fn.emit('morph', ...rawArgs, el, morphable.raw(self))
+        fn.emit('morph', ...rawArgs, morphable.raw(self), el)
         
         let update = view.apply(self, args)
         update.id = update.id || id
@@ -37,7 +37,7 @@ function morphable (view) {
     }, el => {
       if (!reaction) return
       
-      fn.emit('unload', ...rawArgs, el, morphable.raw(self))
+      fn.emit('unload', ...rawArgs, morphable.raw(self), el)
       unobserve(reaction)
       reaction = null
     }, id)
