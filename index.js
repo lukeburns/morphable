@@ -16,16 +16,17 @@ function morphable (view) {
   
   const fn = function () {
     let args = Array.from(arguments)
-    let element = cached || view.apply(self, args.map(state => morphable.raw(state)))
+    let rawArgs = args.map(state => morphable.raw(state))
+    let element = cached || view.apply(self, rawArgs)
     element.id = element.id || id
     
     return onload(element, function (el) {
       if (reaction) return
       cached = el
       
-      fn.emit('load', morphable.raw(state), el, morphable.raw(self))
+      fn.emit('load', ...rawArgs, el, morphable.raw(self))
       reaction = observe(() => {
-        fn.emit('morph', morphable.raw(state), el, morphable.raw(self))
+        fn.emit('morph', ...rawArgs, el, morphable.raw(self))
         
         let update = view.apply(self, args)
         update.id = update.id || id
@@ -36,7 +37,7 @@ function morphable (view) {
     }, el => {
       if (!reaction) return
       
-      fn.emit('unload', morphable.raw(state), el, morphable.raw(self))
+      fn.emit('unload', ...rawArgs, el, morphable.raw(self))
       unobserve(reaction)
       reaction = null
     }, id)

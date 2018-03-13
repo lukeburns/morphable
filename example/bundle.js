@@ -2,6 +2,8 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 (function e(t, n, r) {
   function s(o, u) {
     if (!n[o]) {
@@ -320,10 +322,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       }, list(state));
     });
 
-    body(state, document.body);
+    document.body = body(state);
 
-    list.on('load', function () {
-      return console.log('loaded list');
+    list.on('load', function (state) {
+      return console.log('loaded list', state);
     });
     list.on('morph', function () {
       return console.log('morphed list');
@@ -349,20 +351,25 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       var id = i++;
       var reaction = void 0;
       var cached = void 0;
+      var self = this;
 
-      var fn = function fn(state, init) {
-        var element = cached || init || view(morphable.raw(state));
+      var fn = function fn() {
+        var args = Array.from(arguments);
+        var rawArgs = args.map(function (state) {
+          return morphable.raw(state);
+        });
+        var element = cached || view.apply(self, rawArgs);
         element.id = element.id || id;
 
         return onload(element, function (el) {
           if (reaction) return;
           cached = el;
 
-          fn.emit('load', morphable.raw(state), el);
+          fn.emit.apply(fn, ['load'].concat(_toConsumableArray(rawArgs), [el, morphable.raw(self)]));
           reaction = observe(function () {
-            fn.emit('morph', morphable.raw(state), el);
+            fn.emit.apply(fn, ['morph'].concat(_toConsumableArray(rawArgs), [el, morphable.raw(self)]));
 
-            var update = view(state);
+            var update = view.apply(self, args);
             update.id = update.id || id;
             update.dataset[KEY_ID] = el.dataset[KEY_ID];
 
@@ -371,7 +378,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }, function (el) {
           if (!reaction) return;
 
-          fn.emit('unload', morphable.raw(state), el);
+          fn.emit.apply(fn, ['unload'].concat(_toConsumableArray(rawArgs), [el, morphable.raw(self)]));
           unobserve(reaction);
           reaction = null;
         }, id);

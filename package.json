@@ -1,10 +1,10 @@
 {
   "name": "morphable",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "composable, reactive dom elements",
   "main": "index.js",
   "scripts": {
-    "build": "browserify example/index.js -t yo-yoify | babel --presets=env --out-file bundle.js"
+    "build": "browserify example/index.js -t yo-yoify | babel --presets=env --out-file example/bundle.js"
   },
   "author": "Luke Burns",
   "license": "MIT",
