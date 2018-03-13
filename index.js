@@ -14,8 +14,9 @@ function morphable (view) {
   let cached
   let self = this
   
-  const fn = function (state, init) {
-    let element = cached || init || view.call(morphable.raw(self), morphable.raw(state))
+  const fn = function () {
+    let args = Array.from(arguments)
+    let element = cached || view.apply(self, args.map(state => morphable.raw(state)))
     element.id = element.id || id
     
     return onload(element, function (el) {
@@ -26,7 +27,7 @@ function morphable (view) {
       reaction = observe(() => {
         fn.emit('morph', morphable.raw(state), el, morphable.raw(self))
         
-        let update = view.call(self, state)
+        let update = view.apply(self, args)
         update.id = update.id || id
         update.dataset[KEY_ID] = el.dataset[KEY_ID]
         

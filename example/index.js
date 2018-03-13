@@ -12,7 +12,7 @@ const body = _(state => html`<body>
   ${list(state)}
 </body>`)
 
-body(state, document.body)
+document.body = body(state)
 
 list.on('load', () => console.log('loaded list'))
 list.on('morph', () => console.log('morphed list'))

@@ -15,7 +15,7 @@ let _ = require('morphable')
 
 let state = _({})
 let view = _(state => dom_element)
-let element = view(state, [mount_point])
+let element = view(state)
 ```
 
 `element` morphs when `state` that it depends upon changes. 
@@ -46,7 +46,7 @@ const body = _(list => bel`<body>
   </ul>
 </body>`)
 
-body(list, document.body)
+document.body = body(list)
 ```
 
 ## browser support

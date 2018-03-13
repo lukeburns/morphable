@@ -320,7 +320,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       }, list(state));
     });
 
-    body(state, document.body);
+    document.body = body(state);
 
     list.on('load', function () {
       return console.log('loaded list');
@@ -349,20 +349,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       var id = i++;
       var reaction = void 0;
       var cached = void 0;
+      var self = this;
 
-      var fn = function fn(state, init) {
-        var element = cached || init || view(morphable.raw(state));
+      var fn = function fn() {
+        var args = Array.from(arguments);
+        var element = cached || view.apply(self, args.map(function (state) {
+          return morphable.raw(state);
+        }));
         element.id = element.id || id;
 
         return onload(element, function (el) {
           if (reaction) return;
           cached = el;
 
-          fn.emit('load', morphable.raw(state), el);
+          fn.emit('load', morphable.raw(state), el, morphable.raw(self));
           reaction = observe(function () {
-            fn.emit('morph', morphable.raw(state), el);
+            fn.emit('morph', morphable.raw(state), el, morphable.raw(self));
 
-            var update = view(state);
+            var update = view.apply(self, args);
             update.id = update.id || id;
             update.dataset[KEY_ID] = el.dataset[KEY_ID];
 
@@ -371,7 +375,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }, function (el) {
           if (!reaction) return;
 
-          fn.emit('unload', morphable.raw(state), el);
+          fn.emit('unload', morphable.raw(state), el, morphable.raw(self));
           unobserve(reaction);
           reaction = null;
         }, id);
