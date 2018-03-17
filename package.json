@@ -1,6 +1,6 @@
 {
   "name": "morphable",
-  "version": "0.5.1",
+  "version": "0.5.4",
   "description": "composable, reactive dom elements",
   "main": "index.js",
   "scripts": {

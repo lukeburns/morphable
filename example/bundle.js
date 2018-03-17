@@ -365,9 +365,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           if (reaction) return;
           cached = el;
 
-          fn.emit.apply(fn, ['load'].concat(_toConsumableArray(rawArgs), [el, morphable.raw(self)]));
+          fn.emit.apply(fn, ['load', morphable.raw(self), el].concat(_toConsumableArray(rawArgs)));
           reaction = observe(function () {
-            fn.emit.apply(fn, ['morph'].concat(_toConsumableArray(rawArgs), [el, morphable.raw(self)]));
+            fn.emit.apply(fn, ['morph', morphable.raw(self), el].concat(_toConsumableArray(rawArgs)));
 
             var update = view.apply(self, args);
             update.id = update.id || id;
@@ -378,7 +378,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, function (el) {
           if (!reaction) return;
 
-          fn.emit.apply(fn, ['unload'].concat(_toConsumableArray(rawArgs), [el, morphable.raw(self)]));
+          fn.emit.apply(fn, ['unload', morphable.raw(self), el].concat(_toConsumableArray(rawArgs)));
           unobserve(reaction);
           reaction = null;
         }, id);
