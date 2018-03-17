@@ -23,9 +23,9 @@ let element = view(state)
 you can subscribe to load, morph, and unload events on `view`.
 
 ```js
-view.on('load', (state, element) => console.log('loaded element'))
-view.on('morph', (state, element) => console.log('morphed element'))
-view.on('unload', (state, element) => console.log('unloaded element'))
+view.on('load', () => console.log('loaded element'))
+view.on('morph', () => console.log('morphed element'))
+view.on('unload', () => console.log('unloaded element'))
 ```
 
 elements start and stop reacting to changes when they are added to and removed from the dom.
