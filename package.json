@@ -1,10 +1,10 @@
 {
   "name": "morphable",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "composable, reactive dom elements",
-  "main": "index.js",
+  "main": "build.js",
   "scripts": {
-    "build": "browserify example/index.js -t yo-yoify | babel --presets=env --out-file example/bundle.js"
+    "build": "babel index.js --presets=env --out-file build.js"
   },
   "author": "Luke Burns",
   "license": "MIT",
@@ -14,12 +14,8 @@
     "on-load": "github:lukeburns/on-load"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "babelify": "^8.0.0",
-    "bel": "^5.1.6",
-    "yo-yoify": "^4.3.0"
+    "bel": "^5.1.6"
   }
 }
