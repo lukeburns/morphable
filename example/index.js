@@ -14,6 +14,11 @@ const body = _(state => html`<body>
 
 document.body = body(state)
 
+
 list.on('load', () => console.log('loaded list'))
 list.on('morph', () => console.log('morphed list'))
 list.on('unload', () => console.log('unloaded list'))
+
+body.on('load', () => console.log('loaded body'))
+body.on('morph', () => console.log('morphed body'))
+body.on('unload', () => console.log('unloaded body'))

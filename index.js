@@ -24,19 +24,21 @@ function morphable (view) {
       if (reaction) return
       cached = el
       
-      fn.emit('load', morphable.raw(self), el, ...rawArgs)
+      let init = false
       reaction = observe(() => {
-        fn.emit('morph', morphable.raw(self), el, ...rawArgs)
-        
         let update = view.apply(self, args)
         update.id = update.id || id
         update.setAttribute(KEY_ATTR, cached.getAttribute(KEY_ATTR))
-        
         morph(el, update)
+        if (init) {
+          fn.emit('morph', morphable.raw(self), el, ...rawArgs)
+        } else {
+          fn.emit('load', morphable.raw(self), el, ...rawArgs)
+          init = true
+        }
       })
     }, el => {
       if (!reaction) return
-      
       fn.emit('unload', morphable.raw(self), el, ...rawArgs)
       unobserve(reaction)
       reaction = null
