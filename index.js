@@ -26,6 +26,7 @@ function morphable (view) {
       
       let init = false
       reaction = observe(() => {
+        fn.emit('premorph', morphable.raw(self), el, ...rawArgs)
         let update = view.apply(self, args)
         update.id = update.id || id
         update.setAttribute(KEY_ATTR, cached.getAttribute(KEY_ATTR))

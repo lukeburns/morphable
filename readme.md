@@ -24,6 +24,7 @@ you can subscribe to load, morph, and unload events on `view`.
 
 ```js
 view.on('load', () => console.log('loaded element'))
+view.on('premorph', () => console.log('element, just before morph'))
 view.on('morph', () => console.log('morphed element'))
 view.on('unload', () => console.log('unloaded element'))
 ```
