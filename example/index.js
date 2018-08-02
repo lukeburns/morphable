@@ -1,29 +1,23 @@
 const html = require('bel')
 const _ = require('../')
 
-const state = _({ items: [] })
+const list = _([])
+const li = _(item => html`<li onclick=${() => item.number = Math.random()}>${item.number}</li>`)
+const ul = _(list => html`<ul>${list.map(li)}</ul>`)
 
-for (var i = 0; i < [0,1,2].length; i++) {
-  state.items.push({ num: Math.random() })
-}
+document.body = html`<body>
+  <button onclick=${() => list.push({ number: Math.random() })}>Add a random number</button>
+  ${ul(list)}
+</body>`
 
-window.state = state
+// events
 
-const li = _(item => html`<li>${item.num}</li>`)
-const ul = _(state => html`<ul>
-  ${state.items.map(li)}
-</ul>`)
-const body = _(state => html`<body>
-  ${ul(state)}
-</body>`)
-
-document.body = body(state)
-
+li.on('load', () => console.log('loaded list item'))
+li.on('premorph', () => console.log('premorph list item'))
+li.on('morph', () => console.log('morphed list item'))
+li.on('unload', () => console.log('unloaded list item'))
 
 ul.on('load', () => console.log('loaded list'))
+ul.on('premorph', () => console.log('premorph list'))
 ul.on('morph', () => console.log('morphed list'))
 ul.on('unload', () => console.log('unloaded list'))
-
-body.on('load', () => console.log('loaded body'))
-body.on('morph', () => console.log('morphed body'))
-body.on('unload', () => console.log('unloaded body'))
