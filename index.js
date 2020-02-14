@@ -6,18 +6,20 @@ const { observable, observe, unobserve, isObservable } = util
 const KEY_ATTR = 'data-' + onload.KEY_ID
 let id = 1
 
-function morphable (view) {
+function morphable (view, opts={}) {
   if (typeof view !== 'function') return observable(view)
 
-  let self = this
+  const { reactiveView=true, observeView=true, observeListeners=false } = opts || {}
+
   let cache = new WeakMap()
   let reactions = new WeakMap()
   let int = 1
 
   const fn = function () {
+    let self = this
     let args = Array.from(arguments)
     let rawArgs = args.map(state => morphable.raw(state))
-    let index = args[0]
+    let index = isObservable(self) ? self : args[0]
 
     let element
     if (cache.has(index)) {
@@ -36,15 +38,22 @@ function morphable (view) {
       let init = false
       let int = el.id
       let reaction = observe(() => {
-        fn.emit('premorph', morphable.raw(self), el, ...rawArgs)
-        let update = view.apply(self, args)
+        const listenerArgs = observeListeners ? args : rawArgs
+        const listenerSelf = observeListeners ? self : morphable.raw(self)
+        const viewArgs = observeView ? args : rawArgs
+        const viewSelf = observeView ? self : morphable.raw(self)
+
+        fn.emit('premorph', listenerSelf, el, ...listenerArgs)
+        let update = view.apply(viewSelf, viewArgs)
         update.id = update.id || int
         update.setAttribute(KEY_ATTR, (cache.get(index) || el).getAttribute(KEY_ATTR))
-        morph(el, update)
+        if (reactiveView) {
+          morph(el, update)
+        }
         if (init) {
-          fn.emit('morph', morphable.raw(self), el, ...rawArgs)
+          fn.emit('morph', listenerSelf, el, ...listenerArgs)
         } else {
-          fn.emit('load', morphable.raw(self), el, ...rawArgs)
+          fn.emit('load', listenerSelf, el, ...listenerArgs)
           init = true
         }
       })
@@ -52,7 +61,7 @@ function morphable (view) {
       if (isObservable(index)) reactions.set(index, reaction)
     }, el => {
       if (!reactions.has(index)) return
-      fn.emit('unload', morphable.raw(self), el, ...rawArgs)
+      fn.emit('unload', listenerSelf, el, ...listenerArgs)
       unobserve(reactions.get(index))
       reactions.delete(index)
     }, id)

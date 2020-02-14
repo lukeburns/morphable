@@ -19,12 +19,24 @@ const html = require('bel')
 const _ = require('morphable')
 
 const list = _([ { number: Math.random() } ])
-const li = _(item => html`<li onclick=${() => item.number = Math.random() }>${item.number}</li>`)
+
+const li = _(item => html`<li onclick=${randomize.bind(item)}>${item.number}</li>`)
 const ul = _(list => html`<ul>${list.map(li)}</ul>`)
+
 document.body = html`<body>
-  <button onclick=${() => list.push({ number: Math.random() })}>Add a random number</button>
+  <button onclick=${append.bind(list)}>
+    Add a random number
+  </button>
   ${ul(list)}
 </body>`
+
+function append () {
+  this.push({ number: Math.random() })
+}
+
+function randomize () {
+  this.number = Math.random()
+}
 ```
 
 try running `budo example.js` using [budo](https://github.com/mattdesl/budo) and mutating `window.list` in the console.

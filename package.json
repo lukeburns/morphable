@@ -1,11 +1,12 @@
 {
   "name": "morphable",
-  "version": "0.7.2",
+  "version": "0.7.6",
   "description": "composable, reactive dom elements",
   "main": "build.js",
   "scripts": {
     "build": "babel index.js --presets=@babel/preset-env --out-file build.js",
-    "test": "browserify test.js | tape-run"
+    "test": "browserify test.js | tape-run",
+    "start": "bankai start example.js"
   },
   "author": "Luke Burns",
   "license": "MIT",
@@ -18,6 +19,7 @@
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.1",
     "@babel/preset-env": "^7.0.0",
+    "bankai": "^9.15.3",
     "bel": "^5.1.7",
     "browserify": "^16.2.2",
     "tape": "^4.9.1",
