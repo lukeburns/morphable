@@ -47,7 +47,7 @@ function morphable (view, opts={}) {
         let update = view.apply(viewSelf, viewArgs)
         update.id = update.id || int
         update.setAttribute(KEY_ATTR, (cache.get(index) || el).getAttribute(KEY_ATTR))
-        if (reactiveView) {
+        if (!init || reactiveView) {
           morph(el, update)
         }
         if (init) {
