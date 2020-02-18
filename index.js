@@ -29,7 +29,7 @@ function morphable (view, opts={}) {
     if (cache.has(index)) {
       element = cache.get(index)
     } else {
-      element = view.apply(self, args)
+      element = view.apply(rawSelf, rawArgs)
       element.id = element.id || id++
     }
 
@@ -61,7 +61,7 @@ function morphable (view, opts={}) {
         reactions.set(index, reaction)
       }
     }, el => {
-      if (!reactions.has(index)) return
+      if (document.documentElement.contains(el) || !reactions.has(index)) return
       fn.emit('unload', listenerSelf, el, ...listenerArgs)
       unobserve(reactions.get(index))
       reactions.delete(index)
