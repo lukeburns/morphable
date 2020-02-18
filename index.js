@@ -9,7 +9,7 @@ let id = 1
 function morphable (view, opts={}) {
   if (typeof view !== 'function') return observable(view)
 
-  const { reactiveView=true, observeView=true, observeListeners=false } = opts || {}
+  const { reactiveView=true, observeListeners=false } = opts || {}
 
   let cache = new WeakMap()
   let reactions = new WeakMap()
@@ -22,12 +22,15 @@ function morphable (view, opts={}) {
     let rawSelf = isObservable(self) ? morphable.raw(self) : self
     let index = isObservable(self) ? self : args[0]
 
+    const listenerArgs = observeListeners ? args : rawArgs
+    const listenerSelf = observeListeners ? self : rawSelf
+
     let element
     if (cache.has(index)) {
       element = cache.get(index)
     } else {
-      element = view.apply(self, rawArgs)
-      element.id = id++
+      element = view.apply(self, args)
+      element.id = element.id || id++
     }
 
     return onload(element, function (el) {
@@ -39,16 +42,11 @@ function morphable (view, opts={}) {
       let init = false
       let int = el.id
       let reaction = observe(() => {
-        const listenerArgs = observeListeners ? args : rawArgs
-        const listenerSelf = observeListeners ? self : rawSelf
-        const viewArgs = observeView ? args : rawArgs
-        const viewSelf = observeView ? self : rawSelf
-
-        fn.emit('premorph', listenerSelf, el, ...listenerArgs)
-        let update = view.apply(viewSelf, viewArgs)
-        update.id = update.id || int
-        update.setAttribute(KEY_ATTR, (cache.get(index) || el).getAttribute(KEY_ATTR))
         if (!init || reactiveView) {
+          fn.emit('premorph', listenerSelf, el, ...listenerArgs)
+          let update = view.apply(viewSelf, viewArgs)
+          update.id = update.id || int
+          update.setAttribute(KEY_ATTR, (cache.get(index) || el).getAttribute(KEY_ATTR))
           morph(el, update)
         }
         if (init) {
@@ -59,12 +57,11 @@ function morphable (view, opts={}) {
         }
       })
 
-      if (isObservable(index)) reactions.set(index, reaction)
+      if (isObservable(index)) {
+        reactions.set(index, reaction)
+      }
     }, el => {
       if (!reactions.has(index)) return
-      const listenerArgs = observeListeners ? args : rawArgs
-      const listenerSelf = observeListeners ? self : rawSelf
-      
       fn.emit('unload', listenerSelf, el, ...listenerArgs)
       unobserve(reactions.get(index))
       reactions.delete(index)
