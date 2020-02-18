@@ -9,7 +9,7 @@ let id = 1
 function morphable (view, opts={}) {
   if (typeof view !== 'function') return observable(view)
 
-  const { reactiveView=true, observeListeners=false } = opts || {}
+  let { reactiveView=true, observeListeners=false } = opts || {}
 
   let cache = new WeakMap()
   let reactions = new WeakMap()
@@ -18,12 +18,12 @@ function morphable (view, opts={}) {
   const fn = function () {
     let self = this
     let args = Array.from(arguments)
-    let rawArgs = args.map(state => morphable.raw(state))
-    let rawSelf = isObservable(self) ? morphable.raw(self) : self
     let index = isObservable(self) ? self : args[0]
 
-    const listenerArgs = observeListeners ? args : rawArgs
-    const listenerSelf = observeListeners ? self : rawSelf
+    let rawArgs = args.map(state => morphable.raw(state))
+    let rawSelf = isObservable(self) ? morphable.raw(self) : self
+    let listenerArgs = observeListeners ? args : rawArgs
+    let listenerSelf = observeListeners ? self : rawSelf
 
     let element
     if (cache.has(index)) {
@@ -44,7 +44,7 @@ function morphable (view, opts={}) {
       let reaction = observe(() => {
         if (!init || reactiveView) {
           fn.emit('premorph', listenerSelf, el, ...listenerArgs)
-          let update = view.apply(viewSelf, viewArgs)
+          let update = view.apply(self, args)
           update.id = update.id || int
           update.setAttribute(KEY_ATTR, (cache.get(index) || el).getAttribute(KEY_ATTR))
           morph(el, update)
