@@ -13,7 +13,7 @@ function morphable (view, opts={}) {
 
   let cache = new WeakMap()
   let reactions = new WeakMap()
-  let int = 1
+  let int = 0
 
   const fn = function () {
     let self = this
@@ -30,7 +30,18 @@ function morphable (view, opts={}) {
       element = cache.get(index)
     } else {
       element = view.apply(rawSelf, rawArgs)
-      element.id = element.id || id++
+      if (!element.id) {
+        if (fn.id) {
+          if (int == 0) {
+            element.id = fn.id
+            int++
+          } else {
+            element.id = `${fn.id}-${int++}`
+          }
+        } else {
+          element.id = id++
+        }
+      }
     }
 
     return onload(element, function (el) {
@@ -40,12 +51,12 @@ function morphable (view, opts={}) {
       }
 
       let init = false
-      let int = el.id
+      let old_id = el.id
       let reaction = observe(() => {
         if (!init || reactiveView) {
           fn.emit('premorph', listenerSelf, el, ...listenerArgs)
           let update = view.apply(self, args)
-          update.id = update.id || int
+          update.id = update.id || old_id
           update.setAttribute(KEY_ATTR, (cache.get(index) || el).getAttribute(KEY_ATTR))
           morph(el, update)
         }
