@@ -39,7 +39,7 @@ function randomize () {
 }
 ```
 
-try running `budo example.js` using [budo](https://github.com/mattdesl/budo) and mutating `window.list` in the console.
+try running `budo example.js` using [budo](https://github.com/mattdesl/budo)
 
 ## api
 

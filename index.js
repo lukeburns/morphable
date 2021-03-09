@@ -54,16 +54,16 @@ function morphable (view, opts={}) {
       let old_id = el.id
       let reaction = observe(() => {
         if (!init || reactiveView) {
-          fn.emit('premorph', listenerSelf, el, ...listenerArgs)
+          fn.emit('premorph', el, ...listenerArgs, listenerSelf)
           let update = view.apply(self, args)
           update.id = update.id || old_id
           update.setAttribute(KEY_ATTR, (cache.get(index) || el).getAttribute(KEY_ATTR))
           morph(el, update)
         }
         if (init) {
-          fn.emit('morph', listenerSelf, el, ...listenerArgs)
+          fn.emit('morph', el, ...listenerArgs, listenerSelf)
         } else {
-          fn.emit('load', listenerSelf, el, ...listenerArgs)
+          fn.emit('load', el, ...listenerArgs, listenerSelf)
           init = true
         }
       })
@@ -73,7 +73,7 @@ function morphable (view, opts={}) {
       }
     }, el => {
       if (document.documentElement.contains(el) || !reactions.has(index)) return
-      fn.emit('unload', listenerSelf, el, ...listenerArgs)
+      fn.emit('unload', el, ...listenerArgs, listenerSelf)
       unobserve(reactions.get(index))
       reactions.delete(index)
     }, id)
