@@ -22,6 +22,6 @@
     "@babel/preset-env": "^7.13.10",
     "browserify": "^17.0.0",
     "tape": "^5.2.2",
-    "tape-run": "^8.0.0"
+    "tape-run": "^10.0.0"
   }
 }
